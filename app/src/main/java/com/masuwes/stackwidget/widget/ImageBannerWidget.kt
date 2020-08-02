@@ -21,14 +21,17 @@ class ImageBannerWidget : AppWidgetProvider() {
         const val EXTRA_ITEM = "com.dicoding.picodiploma.EXTRA_ITEM"
 
         private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
-            val intent = Intent(context, StackWidgetService::class.java)
+            val intent = Intent(context, StackWidgetService::class.java) // intent data to layout
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             intent.data = intent.toUri(Intent.URI_INTENT_SCHEME).toUri()
 
+            // set view on widget, if there is data, this guy will call context.packageName and put it on stackView
             val views = RemoteViews(context.packageName, R.layout.image_banner_widget)
             views.setRemoteAdapter(R.id.stack_view, intent)
+            // else if there is no data, this guy will show empty view layout
             views.setEmptyView(R.id.stack_view, R.id.empty_view)
 
+            // intent data to toast
             val toastIntent = Intent(context, ImageBannerWidget::class.java)
             toastIntent.action = TOAST_ACTION
             toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
@@ -47,6 +50,7 @@ class ImageBannerWidget : AppWidgetProvider() {
         }
     }
 
+    // catch intent and display it on toast with index number
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         if (intent.action != null) {
